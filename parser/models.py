@@ -10,7 +10,8 @@ class Vacancy:
     url: str
     technologies: List[str] = field(default_factory=list)
     salary: Optional[float] = None
+    level: Optional[str] = None
 
 
-def __repr__(self):
+    def __repr__(self):
         return f"<Job {self.title} at {self.company}>"

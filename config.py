@@ -45,5 +45,8 @@ BASE_URL = "https://www.work.ua"
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 
+PLOTS_DIR = Path("../data/plots")
+PLOTS_DIR.mkdir(parents=True, exist_ok=True)
+
 PATH_CSV = DATA_DIR / "vacancies.csv"
 PATH_GRAPH = DATA_DIR / "graph.png"

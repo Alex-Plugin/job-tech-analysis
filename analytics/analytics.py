@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from config import PLOTS_DIR
+
 # top 20 technologies bar graph
 # pie graph by cities
 # salary depending on level
@@ -48,6 +50,7 @@ def plot_top_technologies(df: pd.DataFrame):
     ax.tick_params(axis="x", rotation=90)
 
     plt.tight_layout()
+    plt.savefig(PLOTS_DIR / "top_technologies.png")
     plt.show()
 
 

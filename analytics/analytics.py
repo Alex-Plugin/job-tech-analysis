@@ -104,6 +104,8 @@ def plot_salary_from_level_dep(df: pd.DataFrame) -> None:
 
     plt.tight_layout()
     plt.savefig(PLOTS_DIR / "average_salary_by_level.png")
+    print(salary_level.reset_index(name="avg_salary"))
+
     plt.show()
 
 

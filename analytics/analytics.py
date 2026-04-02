@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 
 from config import PLOTS_DIR
 
-# pie graph by cities
 # salary depending on level
 # quantity of vacancies depending on level
 # correlation analysis
@@ -53,27 +52,59 @@ def load_data(path: str) -> pd.DataFrame:
 #     plt.show()
 
 
-def plot_vacancies_by_city(df: pd.DataFrame) -> None:
-    """
-    Builds the pie diagram and plots the vacancies by city.
-    """
-    # We count the quantity of vacancies in every city
-    city_counts = df["location"].value_counts()
+# def plot_vacancies_by_city(df: pd.DataFrame) -> None:
+#     """
+#     Builds the pie diagram and plots the vacancies by city.
+#     """
+#     # We count the quantity of vacancies in every city
+#     city_counts = df["location"].value_counts()
+#
+#     # Create a figure
+#     fig, ax = plt.subplots(figsize=(8, 8))
+#     ax.pie(
+#         city_counts.values,
+#         labels=city_counts.index,
+#         autopct='%1.1f%%',  # result in percents
+#         startangle=90,      # we rotate the pie graph to start from the top
+#         pctdistance=0.85
+#     )
+#     ax.set_title("Vacancies distribution by city")
+#
+#     # Save the graph
+#     plt.savefig(PLOTS_DIR / "vacancies_by_cities.png")
+#     print(f"Saved pie chart to {PLOTS_DIR}")
 
-    # Create a figure
-    fig, ax = plt.subplots(figsize=(8, 8))
-    ax.pie(
-        city_counts.values,
-        labels=city_counts.index,
-        autopct='%1.1f%%',  # result in percents
-        startangle=90,      # we rotate the pie graph to start from the top
-        pctdistance=0.85
-    )
-    ax.set_title("Vacancies distribution by city")
 
-    # Save the graph
-    plt.savefig(PLOTS_DIR / "vacancies_by_cities.png")
-    print(f"Saved pie chart to {PLOTS_DIR}")
+def plot_salary_from_level_dep(df: pd.DataFrame) -> None:
+    """
+    Counts average salary depending on the level and plots bar chart
+    """
+    # Clean data from NaN
+    df_clean = df.dropna(subset=["salary", "level"])
+
+    # Group by level and calculate average salary
+    salary_level = df_clean.groupby("level")["salary"].mean()
+
+    # Set correct order of levels
+    order = ["Intern", "Junior", "Middle", "Senior"]
+    salary_level = salary_level.reindex(order).dropna()
+
+    # Build the graph
+    fig, ax = plt.subplots(figsize=(8, 5))
+
+    ax.bar(salary_level.index, salary_level.values)
+
+    ax.set_title("Average Salary by Level")
+    ax.set_xlabel("Level")
+    ax.set_ylabel("Average salary")
+
+    # Add values above bars
+    for i, v in enumerate(salary_level.values):
+        ax.text(i, v, f"{int(v)}", ha="center", va="bottom")
+
+    plt.tight_layout()
+    plt.savefig(PLOTS_DIR / "average_salary_by_level.png")
+    plt.show()
 
 
 def main():
@@ -81,8 +112,11 @@ def main():
     # df_exploded = prepare_technologies(df)
     # plot_top_technologies(df_exploded)
 
-    df = df.dropna(subset=["location"])  # we delete all Nan from df
-    plot_vacancies_by_city(df)
+    # df = df.dropna(subset=["location"])  # we delete all Nan from df
+    # plot_vacancies_by_city(df)
+
+    plot_salary_from_level_dep(df)
+
 
 
 if __name__ == "__main__":

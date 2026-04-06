@@ -53,3 +53,9 @@ Nevertheless, it shows that the market roughly requires developers across all le
 <img src="data/plots/top_companies.png" width="600">
 
 **Insight:**
+
+Most of the companies in Ukraine looking for specialists with Python as a main skill are software development  
+companies, which explains the high demand for backend developers.  
+Additionally, we can see that one EdTech company is searching for Python teachers, totaling 3 vacancies.  
+However, it is difficult to identify the demand for data analytics and data science roles from this top stack,  
+because technologies like Pandas, Matplotlib, NumPy, PowerBI, and Tableau do not appear in the top 20.

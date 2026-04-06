@@ -1,11 +1,11 @@
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib import cm
 
 from config import PLOTS_DIR
 
-# quantity of vacancies depending on level
 # correlation analysis
-# top companies by quantity of vacancies
 
 def load_data(path: str) -> pd.DataFrame:
     df = pd.read_csv("../data/vacancies.csv")
@@ -14,6 +14,13 @@ def load_data(path: str) -> pd.DataFrame:
 # we create a function that converts str in technologies into
 # a python list with technologies
 def prepare_technologies(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Prepares the technologies column in the dataframe.
+
+    Parses each string in the 'technologies' column into a list of individual
+    technologies, then explodes the list so that each technology gets its own row.
+
+    """
     def parse_technologies(tech_str: str) -> list[str]:
         tech_str = tech_str.strip("[]")     # remove []
         tech_str = tech_str.replace("'", "")      # remove quotes
@@ -34,11 +41,13 @@ def plot_top_technologies(df: pd.DataFrame):
 
     # we create a bar diagram
     # we can make it with this shortcut - tech_counts.plot(kind="bar")
-    # but to make everything crear
+    # but to make everything clear
 
     fig, ax = plt.subplots()
 
-    ax.bar(tech_counts.index, tech_counts.values)
+    # built in palette Greys
+    colors = cm.get_cmap("Greys_r")(np.linspace(0.3, 0.8, len(tech_counts)))
+    ax.bar(tech_counts.index, tech_counts.values, color=colors)
 
     ax.set_title("Top 20 Technologies")
     ax.set_xlabel("Technology")
@@ -84,14 +93,16 @@ def plot_salary_from_level_dep(df: pd.DataFrame) -> None:
     # Group by level and calculate average salary
     salary_level = df_clean.groupby("level")["salary"].mean()
 
-    # Set correct order of levels
+    # Set the correct order of levels
     order = ["Intern", "Junior", "Middle", "Senior"]
     salary_level = salary_level.reindex(order).dropna()
 
     # Build the graph
     fig, ax = plt.subplots(figsize=(8, 5))
 
-    ax.bar(salary_level.index, salary_level.values)
+    colors = ["#2ca02c", "#ffdd57", "#ff7f0e", "#d62728"]
+
+    ax.bar(salary_level.index, salary_level.values, color=colors)
 
     ax.set_title("Average Salary by Level")
     ax.set_xlabel("Level")
@@ -122,8 +133,9 @@ def plot_vacancy_from_level(df: pd.DataFrame) -> None:
     level_vacancies = level_vacancies.reindex(order).dropna()
 
     # Build the graph
+    colors = ["#2ca02c", "#ffdd57", "#ff7f0e", "#d62728"]
     fig, ax = plt.subplots(figsize=(8, 5))
-    ax.bar(level_vacancies.index, level_vacancies.values)
+    ax.bar(level_vacancies.index, level_vacancies.values, color=colors)
 
     ax.set_title("Quantity of Vacancies for Each Level")
     ax.set_xlabel("Level")
@@ -140,6 +152,52 @@ def plot_vacancy_from_level(df: pd.DataFrame) -> None:
     plt.show()
 
 
+def plot_vacancies_top_companies(df: pd.DataFrame) -> None:
+    """
+    Plots top 10 companies by number of vacancies
+    """
+    # Clean data
+    df_clean = df.dropna(subset=["company", "title"])
+
+    # Count vacancies per company and sort
+    top_companies = (
+        df_clean.groupby("company")["title"]
+        .count()
+        .sort_values(ascending=False)
+        .head(10)
+    )
+    max_len = 20  # maximal lenth of a company name
+    # we make reindexing
+    top_companies.index = [
+        name if len(name) <= max_len else name[:max_len - 3] + "..."
+        for name in top_companies.index
+    ]
+
+    # Build horizontal bar chart
+    colors = ["#ff9999", "#66b3ff", "#99ff99", "#ffcc99", "#c2c2f0",
+              "#ffb3e6", "#c2f0c2", "#ff6666", "#66ffff", "#ffcc66"]
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.barh(top_companies.index, top_companies.values, color=colors)
+
+    ax.set_title("Top 10 Companies by Number of Vacancies")
+    ax.set_xlabel("Vacancies Quantity")
+    ax.set_ylabel("Company")
+
+    # Invert axis → the biggest on top (very important!)
+    ax.invert_yaxis()
+
+    # Add values
+    for i, v in enumerate(top_companies.values):
+        ax.text(v, i, f"{v}", va="center")
+
+    plt.tight_layout()
+
+    plt.savefig(PLOTS_DIR / "top_companies.png")
+    print(top_companies)
+
+    plt.show()
+
+
 def main():
     df = load_data("../data/vacancies.csv")
     df_exploded = prepare_technologies(df)
@@ -152,6 +210,7 @@ def main():
 
     plot_vacancy_from_level(df)
 
+    plot_vacancies_top_companies(df)
 
 
 if __name__ == "__main__":

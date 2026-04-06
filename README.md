@@ -13,6 +13,13 @@ Analyze most demanded technologies for Python developers using web scraping and 
 
 <img src="data/plots/top_technologies.png" width="600">
 
+**Insight:**
+
+According to the results of this graph, we can conclude that most of the vacancies  
+are for backend Python developers, since we see in the top 10 technologies such as  
+Django, REST API, FastAPI, Docker, JavaScript, Flask, Redis and PostgreSQL, which  
+are typical for backend developer positions.
+
 ## 📊 Vacancies by City
 
 <img src="data/plots/vacancies_by_cities.png" width="600">
@@ -40,3 +47,9 @@ Data is available for only 22 out of 70 vacancies, as most job postings do not s
 Nevertheless, it shows that the market roughly requires developers across all levels: from Intern to Senior.
 
 ⚠️ Note: The data is incomplete, so the chart and table reflect only the available subset of the market.
+
+## Top 10 companies by number of vacancies
+
+<img src="data/plots/top_companies.png" width="600">
+
+**Insight:**
